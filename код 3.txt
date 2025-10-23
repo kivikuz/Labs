@@ -1,0 +1,303 @@
+import java.util.Scanner;
+
+class Node {
+    String data;
+    int priority;
+    Node next;
+
+    public Node(String data, int priority) {
+        this.data = data;
+        this.priority = priority;
+        this.next = null;
+    }
+}
+
+public class Main {
+    private static Node priorityHead = null;
+    private static Node queueFront = null;
+    private static Node queueRear = null;
+    private static Node stackTop = null;
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.println("=== СТРУКТУРЫ ДАННЫХ ===");
+
+        int choice;
+        do {
+            System.out.println("\nГлавное меню:");
+            System.out.println("1. Приоритетная очередь");
+            System.out.println("2. Очередь (FIFO)");
+            System.out.println("3. Стек (LIFO)");
+            System.out.println("0. Выход");
+            System.out.print("Выбор: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    priorityMenu();
+                    break;
+                case 2:
+                    queueMenu();
+                    break;
+                case 3:
+                    stackMenu();
+                    break;
+                case 0:
+                    System.out.println("Выход из программы");
+                    break;
+                default:
+                    System.out.println("Неверный выбор");
+                    break;
+            }
+        } while (choice != 0);
+
+        scanner.close();
+    }
+
+    // ПРИОРИТЕТНАЯ ОЧЕРЕДЬ
+    private static void priorityMenu() {
+        int choice;
+        do {
+            System.out.println("\n--- ПРИОРИТЕТНАЯ ОЧЕРЕДЬ ---");
+            System.out.println("1. Добавить элементы");
+            System.out.println("2. Удалить элемент");
+            System.out.println("3. Показать очередь");
+            System.out.println("0. Назад");
+            System.out.print("Выбор: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addPriority();
+                    break;
+                case 2:
+                    removePriority();
+                    break;
+                case 3:
+                    showPriority();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Неверный выбор");
+                    break;
+            }
+        } while (choice != 0);
+    }
+
+    private static void addPriority() {
+        System.out.println("\nДля выхода введите '0' как название");
+
+        while (true) {
+            System.out.print("Введите название: ");
+            String name = scanner.next();
+
+            if (name.equals("0")) {
+                break;
+            }
+
+            System.out.print("Введите приоритет: ");
+            int priority = scanner.nextInt();
+
+            Node newNode = new Node(name, priority);
+
+            if (priorityHead == null || priority > priorityHead.priority) {
+                newNode.next = priorityHead;
+                priorityHead = newNode;
+            } else {
+                Node current = priorityHead;
+                while (current.next != null && current.next.priority >= priority) {
+                    current = current.next;
+                }
+                newNode.next = current.next;
+                current.next = newNode;
+            }
+            System.out.println("Добавлен: " + name + " (приоритет: " + priority + ")");
+        }
+    }
+
+    private static void removePriority() {
+        if (priorityHead == null) {
+            System.out.println("Очередь пуста");
+            return;
+        }
+
+        System.out.println("Удален: " + priorityHead.data);
+        priorityHead = priorityHead.next;
+    }
+
+    private static void showPriority() {
+        System.out.println("\nПриоритетная очередь:");
+        if (priorityHead == null) {
+            System.out.println("Пусто");
+            return;
+        }
+
+
+        Node current = priorityHead;
+        while (current != null) {
+            System.out.println("- " + current.data + " (приоритет: " + current.priority + ")");
+            current = current.next;
+        }
+    }
+
+    // ОЧЕРЕДЬ FIFO
+    private static void queueMenu() {
+        int choice;
+        do {
+            System.out.println("\n--- ОЧЕРЕДЬ (FIFO) ---");
+            System.out.println("1. Добавить элементы");
+            System.out.println("2. Удалить элемент");
+            System.out.println("3. Показать очередь");
+            System.out.println("0. Назад");
+            System.out.print("Выбор: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addQueue();
+                    break;
+                case 2:
+                    removeQueue();
+                    break;
+                case 3:
+                    showQueue();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Неверный выбор");
+                    break;
+            }
+        } while (choice != 0);
+    }
+
+    private static void addQueue() {
+        System.out.println("\nДля выхода введите '0' как название");
+
+        while (true) {
+            System.out.print("Введите название: ");
+            String name = scanner.next();
+
+            if (name.equals("0")) {
+                break;
+            }
+
+            // Для очереди приоритет всегда 0
+            Node newNode = new Node(name, 0);
+
+            if (queueRear == null) {
+                queueFront = newNode;
+                queueRear = newNode;
+            } else {
+                queueRear.next = newNode;
+                queueRear = newNode;
+            }
+            System.out.println("Добавлен в очередь: " + name);
+        }
+    }
+
+    private static void removeQueue() {
+        if (queueFront == null) {
+            System.out.println("Очередь пуста");
+            return;
+        }
+
+        System.out.println("Удален из очереди: " + queueFront.data);
+        queueFront = queueFront.next;
+
+        if (queueFront == null) {
+            queueRear = null;
+        }
+    }
+
+    private static void showQueue() {
+        System.out.println("\nОчередь:");
+        if (queueFront == null) {
+            System.out.println("Пусто");
+            return;
+        }
+
+        Node current = queueFront;
+        while (current != null) {
+            System.out.println("- " + current.data);
+            current = current.next;
+        }
+    }
+
+    // СТЕК LIFO
+    private static void stackMenu() {
+        int choice;
+        do {
+            System.out.println("\n--- СТЕК (LIFO) ---");
+            System.out.println("1. Добавить элементы");
+            System.out.println("2. Удалить элемент");
+            System.out.println("3. Показать стек");
+            System.out.println("0. Назад");
+            System.out.print("Выбор: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addStack();
+                    break;
+                case 2:
+                    removeStack();
+                    break;
+                case 3:
+                    showStack();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Неверный выбор");
+                    break;
+            }
+        } while (choice != 0);
+    }
+
+    private static void addStack() {
+        System.out.println("\nДля выхода введите '0' как название");
+
+        while (true) {
+            System.out.print("Введите название: ");
+            String name = scanner.next();
+
+            if (name.equals("0")) {
+                break;
+            }
+
+            // Для стека приоритет всегда 0
+            Node newNode = new Node(name, 0);
+            newNode.next = stackTop;
+            stackTop = newNode;
+
+            System.out.println("Добавлен в стек: " + name);
+        }
+    }
+
+
+    private static void removeStack() {
+        if (stackTop == null) {
+            System.out.println("Стек пуст");
+            return;
+        }
+
+        System.out.println("Удален из стека: " + stackTop.data);
+        stackTop = stackTop.next;
+    }
+
+    private static void showStack() {
+        System.out.println("\nСтек:");
+        if (stackTop == null) {
+            System.out.println("Пусто");
+            return;
+        }
+
+        Node current = stackTop;
+        while (current != null) {
+            System.out.println("- " + current.data);
+            current = current.next;
+        }
+    }
+}
