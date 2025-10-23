@@ -1,0 +1,237 @@
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+
+
+    public static void shellSort(int[] array) {
+        int[] gaps = { 9, 5, 3, 2, 1 };
+
+        for (int gap : gaps) {
+            for (int i = gap; i < array.length; i++) {
+                int temp = array[i];
+                int j;
+                for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
+                    array[j] = array[j - gap];
+                }
+                array[j] = temp;
+            }
+        }
+    }
+
+
+    public static void quickSort(int[] array, int start, int end) {
+        if (start < end) {
+            int pivot = array[end];
+            int i = start - 1;
+
+            for (int j = start; j < end; j++) {
+                if (array[j] <= pivot) {
+                    i++;
+                    int temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+            }
+
+            int temp = array[i + 1];
+            array[i + 1] = array[end];
+            array[end] = temp;
+
+            quickSort(array, start, i);
+            quickSort(array, i + 2, end);
+        }
+    }
+
+    public static void quickSortSimple(int[] array) {
+        quickSort(array, 0, array.length - 1);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random rand = new Random();
+
+        System.out.println("Выберите тест:");
+        System.out.println("1 - Умножение матриц");
+        System.out.println("2 - Сортировка массивов");
+        System.out.print("ваш выбор: ");
+        int choice = scanner.nextInt();
+
+        if (choice == 1) {
+            System.out.println("=== УМНОЖЕНИЕ МАТРИЦ ===");
+            System.out.println("Размер | Время (сек)");
+            System.out.println("------|------------");
+
+            int[] sizes = { 100, 200, 400, 1000, 2000, 4000, 10000 };
+
+            for (int size : sizes) {
+                int[][] a = new int[size][size];
+                int[][] b = new int[size][size];
+                int[][] c = new int[size][size];
+
+
+                for (int i = 0; i < size; i++) {
+                    for (int j = 0; j < size; j++) {
+                        a[i][j] = (short)rand.nextInt(100);
+                        b[i][j] = (short)rand.nextInt(100);
+                    }
+                }
+
+                long start = System.nanoTime();
+
+
+                for (int i = 0; i < size; i++) {
+                    for (int j = 0; j < size; j++) {
+                        int result = 0;
+                        for (int k = 0; k < size; k++) {
+                            result += a[i][k] * b[k][j];
+                        }
+                        c[i][j] = result;
+                    }
+                }
+
+                long end = System.nanoTime();
+                double time = (end - start) / 1_000_000_000.0;
+
+                System.out.printf("%6d | %8.3f\n", size, time);
+            }
+
+        }
+        else if (choice == 2) {
+
+            System.out.println("=== СОРТИРОВКИ ===");
+
+            int[] sizes = { 100, 200, 400, 1000, 2000, 4000, 10000 };
+
+            for (int size : sizes) {
+                System.out.println("\n--- Размер массива: " + size + " ---");
+
+
+                System.out.println("Случайный массив:");
+                int[] randomArray1 = new int[size];
+                int[] randomArray2 = new int[size];
+                int[] randomArray3 = new int[size];
+                for (int i = 0; i < size; i++) {
+                    int num = rand.nextInt(100000);
+                    randomArray1[i] = num;
+                    randomArray2[i] = num;
+                    randomArray3[i] = num;
+                }
+
+                long start1 = System.nanoTime();
+                shellSort(randomArray1);
+                long end1 = System.nanoTime();
+                double time1 = (end1 - start1) / 1_000_000_000.0;
+                long start2 = System.nanoTime();
+                quickSortSimple(randomArray2);
+                long end2 = System.nanoTime();
+                double time2 = (end2 - start2) / 1_000_000_000.0;
+
+                long start3 = System.nanoTime();
+                Arrays.sort(randomArray3);
+                long end3 = System.nanoTime();
+                double time3 = (end3 - start3) / 1_000_000_000.0;
+
+                System.out.printf("Shell Sort: %.8f сек\n", time1);
+                System.out.printf("Quick Sort: %.8f сек\n", time2);
+                System.out.printf("Arrays.sort: %.8f сек\n", time3);
+
+
+                System.out.println("Возрастающий массив:");
+                int[] ascendingArray1 = new int[size];
+                int[] ascendingArray2 = new int[size];
+                int[] ascendingArray3 = new int[size];
+                for (int i = 0; i < size; i++) {
+                    ascendingArray1[i] = i;
+                    ascendingArray2[i] = i;
+                    ascendingArray3[i] = i;
+                }
+
+                start1 = System.nanoTime();
+                shellSort(ascendingArray1);
+                end1 = System.nanoTime();
+                time1 = (end1 - start1) / 1_000_000_000.0;
+
+                start2 = System.nanoTime();
+                quickSortSimple(ascendingArray2);
+                end2 = System.nanoTime();
+                time2 = (end2 - start2) / 1_000_000_000.0;
+
+                start3 = System.nanoTime();
+                Arrays.sort(ascendingArray3);
+                end3 = System.nanoTime();
+                time3 = (end3 - start3) / 1_000_000_000.0;
+
+                System.out.printf("Shell Sort: %.8f сек\n", time1);
+                System.out.printf("Quick Sort: %.8f сек\n", time2);
+                System.out.printf("Arrays.sort: %.8f сек\n", time3);
+
+
+                System.out.println("Убывающий массив:");
+                int[] descendingArray1 = new int[size];
+                int[] descendingArray2 = new int[size];
+                int[] descendingArray3 = new int[size];
+                for (int i = 0; i < size; i++) {
+                    descendingArray1[i] = size - i - 1;
+                    descendingArray2[i] = size - i - 1;
+                    descendingArray3[i] = size - i - 1;
+                }
+
+                start1 = System.nanoTime();
+                shellSort(descendingArray1);
+                end1 = System.nanoTime();
+                time1 = (end1 - start1) / 1_000_000_000.0;
+
+                start2 = System.nanoTime();
+                quickSortSimple(descendingArray2);
+                end2 = System.nanoTime();
+                time2 = (end2 - start2) / 1_000_000_000.0;
+
+                start3 = System.nanoTime();
+                Arrays.sort(descendingArray3);
+                end3 = System.nanoTime();
+                time3 = (end3 - start3) / 1_000_000_000.0;
+
+                System.out.printf("Shell Sort: %.8f сек\n", time1);
+                System.out.printf("Quick Sort: %.8f сек\n", time2);
+                System.out.printf("Arrays.sort: %.8f сек\n", time3);
+
+
+                System.out.println("Смешанный массив:");
+                int[] mixedArray1 = new int[size];
+                int[] mixedArray2 = new int[size];
+                int[] mixedArray3 = new int[size];
+                int half = size / 2;
+                for (int i = 0; i < half; i++) {
+                    mixedArray1[i] = i;
+                    mixedArray2[i] = i;
+                    mixedArray3[i] = i;
+                }
+                for (int i = half; i < size; i++) {
+                    mixedArray1[i] = size - i + half - 1;
+                    mixedArray2[i] = size - i + half - 1;
+                    mixedArray3[i] = size - i + half - 1;
+                }
+
+                start1 = System.nanoTime();
+                shellSort(mixedArray1);
+                end1 = System.nanoTime();
+                time1 = (end1 - start1) / 1_000_000_000.0;
+                start2 = System.nanoTime();
+                quickSortSimple(mixedArray2);
+                end2 = System.nanoTime();
+                time2 = (end2 - start2) / 1_000_000_000.0;
+
+                start3 = System.nanoTime();
+                Arrays.sort(mixedArray3);
+                end3 = System.nanoTime();
+                time3 = (end3 - start3) / 1_000_000_000.0;
+
+                System.out.printf("Shell Sort: %.8f сек\n", time1);
+                System.out.printf("Quick Sort: %.8f сек\n", time2);
+                System.out.printf("Arrays.sort: %.8f сек\n", time3);
+            }
+        }
+    }
+}
